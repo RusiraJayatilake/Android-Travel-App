@@ -21,13 +21,23 @@ public class ViewPager2Adapter extends FragmentStateAdapter {
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-        switch (position){
-            case 0:
-                return new HomeFragment();
-            case 1:
-                return new SearchFragment();
-            default:
-                return new HomeFragment();
+//        switch (position){
+//            case 0:
+//                return new SearchFragment();
+////            case 1:
+////                return new SearchFragment();
+//            default:
+//                return new HomeFragment();
+//        }
+
+        if(position == 0){
+            return new HomeFragment();
+        } else if(position == 1){
+            return new SearchFragment();
+        } else if(position == 2){
+            return null;
+        } else {
+            return null;
         }
     }
 
