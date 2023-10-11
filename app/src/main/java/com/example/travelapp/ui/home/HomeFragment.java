@@ -1,89 +1,96 @@
 package com.example.travelapp.ui.home;
 
-import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.travelapp.R;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 public class HomeFragment extends Fragment {
     private FrameLayout homeScreen;
-    private ImageView[] homeImages;
-    private FirebaseStorage storage = FirebaseStorage.getInstance();
-    private StorageReference[] httpsReferences;
-    private String[] imageUrls;
+    private ImageView mainImage;
+    private ImageView placeImage;
+    private ImageView restaurantImage;
+    private ImageView hotelImage;
+    private TextView mainTitle;
+    private TextView placeTitle;
+    private TextView restaurantTitle;
+    private TextView hotelTitle;
+    private TextView mainDescription;
+
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
         homeScreen = rootView.findViewById(R.id.home_screen);
-        ImageView mainImage = rootView.findViewById(R.id.mainImage);
-        ImageView placeImage = rootView.findViewById(R.id.img_place);
-        ImageView resturantImage = rootView.findViewById(R.id.img_resturant);
-        ImageView hotelImage = rootView.findViewById(R.id.img_hotel);
 
+        mainImage = rootView.findViewById(R.id.mainImage);
+        placeImage = rootView.findViewById(R.id.img_place);
+        restaurantImage = rootView.findViewById(R.id.img_resturant);
+        hotelImage = rootView.findViewById(R.id.img_hotel);
 
-        homeImages = new ImageView[]{mainImage, placeImage, resturantImage, hotelImage};
+        mainTitle = rootView.findViewById(R.id.mainTitle);
+        mainDescription = rootView.findViewById(R.id.mainDes);
+        placeTitle = rootView.findViewById(R.id.place_title);
+        restaurantTitle = rootView.findViewById(R.id.restaurant_title);
+        hotelTitle = rootView.findViewById(R.id.hotel_title);
 
-        // Firebase Storage reference URL.
-        imageUrls = new String[] {
-                "https://firebasestorage.googleapis.com/v0/b/travelappdb-83e9e.appspot.com/o/HomeScreen%2Fhome_img1.jpg?alt=media&token=9a52f2e9-57b0-441f-83e8-61b7d0b07215",
-                "https://firebasestorage.googleapis.com/v0/b/travelappdb-83e9e.appspot.com/o/HomeScreen%2Fplaces.jpg?alt=media&token=ae5cce80-525f-4037-9be5-f084bee70ad6",
-                "https://firebasestorage.googleapis.com/v0/b/travelappdb-83e9e.appspot.com/o/HomeScreen%2Fhotels.jpg?alt=media&token=f12faa20-0674-4f6b-a904-dec91635a97d",
-                "https://firebasestorage.googleapis.com/v0/b/travelappdb-83e9e.appspot.com/o/HomeScreen%2Frestaurants.jpg?alt=media&token=6901b8f6-4bff-4896-b729-74b17fc2e96f"
-
-        };
-
-        // Create a reference to the image
-        httpsReferences = new StorageReference[imageUrls.length];
-        for(int i = 0; i < imageUrls.length; i++){
-            httpsReferences[i] = storage.getReferenceFromUrl(imageUrls[i]);
-        }
-
-
-        // fetch images from firebase storage using a background thread
-        Executor executor = Executors.newSingleThreadExecutor();
+        
+        // Fetch data from Firestore
+        Executor executor = Executors.newFixedThreadPool(4);
         executor.execute(() -> {
             try {
-                // Fetch and display the image
-                for(int i = 0; i < imageUrls.length; i++){
-                    int finali = i;
-                    httpsReferences[i].getDownloadUrl().addOnSuccessListener(uri -> {
-                        imageUrls[finali] = uri.toString();
-                        // Load the image using Glide
-                        Glide.with(this).load(imageUrls[finali]).into(homeImages[finali]);
+                db.collection("TravelApp").document("home_screen")  // document ID to retrieve
+                        .get().addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                DocumentSnapshot document = task.getResult();
+                                if (document.exists()) {
+                                    // Populate data into views
+                                    mainTitle.setText(document.getString("main_title"));
+                                    placeTitle.setText(document.getString("place_title"));
+                                    restaurantTitle.setText(document.getString("restaurants_title"));
+                                    hotelTitle.setText(document.getString("hotel_title"));
+                                    mainDescription.setText(document.getString("main_des"));
 
-                    });
-                }
+                                    // Load images using Glide
+                                    Glide.with(this).load(document.getString("main_img_url")).into(mainImage);
+                                    Glide.with(this).load(document.getString("place_img")).into(placeImage);
+                                    Glide.with(this).load(document.getString("restaurants_img")).into(restaurantImage);
+                                    Glide.with(this).load(document.getString("hotel_img")).into(hotelImage);
+                                } else {
+                                    Toast.makeText(getContext(), "Document not found.", Toast.LENGTH_SHORT).show();
+                                }
+                            } else {
+                                // Handle any errors that occur.
+                                requireActivity().runOnUiThread(() -> {
+                                    Toast.makeText(getContext(), "Error getting data: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                });
+                            }
+                        });
             } catch (Exception e) {
                 e.printStackTrace();
-                // Handle any errors that occur.
-                requireActivity().runOnUiThread(() -> {
-                    Toast.makeText(getContext(), "Error downloading image: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                });
+                // Handle any other exceptions that may occur.
             }
         });
 
         return rootView;
     }
-
-
 }

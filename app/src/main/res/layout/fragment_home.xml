@@ -68,9 +68,9 @@
                         android:scaleType="centerCrop" />
 
                     <TextView
+                        android:id="@+id/place_title"
                         android:layout_width="120dp"
                         android:layout_height="wrap_content"
-                        android:text="Places to Visit"
                         android:textAlignment="center"/>
                 </LinearLayout>
 
@@ -88,9 +88,9 @@
                         android:scaleType="centerCrop" />
 
                     <TextView
+                        android:id="@+id/restaurant_title"
                         android:layout_width="120dp"
                         android:layout_height="wrap_content"
-                        android:text="Restaurants"
                         android:textAlignment="center" />
                 </LinearLayout>
 
@@ -108,9 +108,9 @@
                         android:scaleType="centerCrop" />
 
                     <TextView
+                        android:id="@+id/hotel_title"
                         android:layout_width="120dp"
                         android:layout_height="wrap_content"
-                        android:text="Hotel"
                         android:textAlignment="center" />
                 </LinearLayout>
 
