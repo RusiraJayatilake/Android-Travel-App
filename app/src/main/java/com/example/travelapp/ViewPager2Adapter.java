@@ -1,46 +1,29 @@
 package com.example.travelapp;
 
-import android.view.MenuItem;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
-
-import com.example.travelapp.ui.home.HomeFragment;
-import com.example.travelapp.ui.search.SearchFragment;
+import java.util.ArrayList;
 
 public class ViewPager2Adapter extends FragmentStateAdapter {
-    private Fragment[] fragments;
+    private ArrayList<Fragment> fragmentArrayList;
 
-    public ViewPager2Adapter(@NonNull FragmentActivity fragmentActivity) {
+    public ViewPager2Adapter(@NonNull FragmentActivity fragmentActivity, ArrayList<Fragment> fragmentsList) {
         super(fragmentActivity);
+        this.fragmentArrayList = fragmentsList;
     }
 
-    public ViewPager2Adapter(@NonNull Fragment fragment) {
-        super(fragment);
-    }
-
-    @NonNull
     @Override
     public Fragment createFragment(int position) {
-        switch (position){
-            case 0:
-                return new HomeFragment();
-            case 1:
-                return new SearchFragment();
-            default:
-                return new HomeFragment();
-        }
+        return fragmentArrayList.get(position);
     }
+
 
     @Override
     public int getItemCount() {
-        return fragments.length;
+        return fragmentArrayList.size();
     }
 
-    public void setFragment(Fragment[] fragments) {
-        this.fragments = fragments;
-    }
 
 }

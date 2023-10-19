@@ -30,6 +30,7 @@ public class HomeFragment extends Fragment {
     private TextView restaurantTitle;
     private TextView hotelTitle;
     private TextView mainDescription;
+    private TextView categoryTitle;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Override
@@ -47,6 +48,7 @@ public class HomeFragment extends Fragment {
         // Main Screens
         mainTitle = rootView.findViewById(R.id.mainTitle);
         mainDescription = rootView.findViewById(R.id.mainDes);
+        categoryTitle = rootView.findViewById(R.id.mainCategory);
         // Category List Titles
         placeTitle = rootView.findViewById(R.id.place_title);
         restaurantTitle = rootView.findViewById(R.id.restaurant_title);
@@ -68,6 +70,7 @@ public class HomeFragment extends Fragment {
                                     mainTitle.setText(document.getString("main_title"));
                                     mainDescription.setText(document.getString("main_des"));
 
+                                    String category_title = (String) categoryList.get("category_title");
                                     String hImg = (String) categoryList.get("hotel_img");
                                     String hTitle = (String) categoryList.get("hotel_title");
                                     String resImg = (String) categoryList.get("restaurants_img");
@@ -75,6 +78,7 @@ public class HomeFragment extends Fragment {
                                     String pImg = (String) categoryList.get("place_img");
                                     String pTitle = (String) categoryList.get("place_title");
 
+                                    categoryTitle.setText(category_title);
                                     hotelTitle.setText(hTitle);
                                     placeTitle.setText(pTitle);
                                     restaurantTitle.setText(resTitle);
