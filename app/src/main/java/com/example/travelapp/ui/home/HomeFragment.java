@@ -4,6 +4,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,24 +61,54 @@ public class HomeFragment extends Fragment {
         Executor executor = Executors.newFixedThreadPool(4);
         executor.execute(() -> {
             try {
-                db.collection("TravelApp").document("home_screen")  // document ID to retrieve data
+                    // Fetch data from the "mainInfo" document
+                    db.collection("HomeScreen").document("mainInfo")  // document ID to retrieve data
                         .get().addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
                                 DocumentSnapshot document = task.getResult();
                                 if (document.exists()) {
-                                    Map<String, Object> categoryList = (Map<String, Object>) document.get("category_list");
-
                                     // Populate data into views
-                                    mainTitle.setText(document.getString("main_title"));
-                                    mainDescription.setText(document.getString("main_des"));
+                                    mainTitle.setText(document.getString("mainTitle"));
+                                    mainDescription.setText(document.getString("mainDescription"));
+                                    // Load images using Glide
+                                    Glide.with(this).load(document.getString("mainImage")).into(mainImage);
 
-                                    String category_title = (String) categoryList.get("category_title");
-                                    String hImg = (String) categoryList.get("hotel_img");
-                                    String hTitle = (String) categoryList.get("hotel_title");
-                                    String resImg = (String) categoryList.get("restaurants_img");
-                                    String resTitle = (String) categoryList.get("restaurants_title");
-                                    String pImg = (String) categoryList.get("place_img");
-                                    String pTitle = (String) categoryList.get("place_title");
+                                } else {
+                                    Toast.makeText(getContext(), "Document not found.", Toast.LENGTH_SHORT).show();
+                                }
+                            } else {
+                                // Handle any errors that occur.
+                                requireActivity().runOnUiThread(() -> {
+                                    Toast.makeText(getContext(), "Error getting data: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                });
+                            }
+                        });
+
+
+                // Fetch data from the "horizontalScrollView" document
+                db.collection("HomeScreen").document("horizontalScrollView")
+                        .get()
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                DocumentSnapshot document = task.getResult();
+                                if (document.exists()) {
+                                    // Populate data from "scrollView" document
+                                    Map<String, Object> categoryList = (Map<String, Object>) document.get("categoryList");
+                                    String category_title = document.getString("categoryTitle");
+                                    String hImg = (String) categoryList.get("hotelImg");
+                                    String hTitle = (String) categoryList.get("hotelTitle");
+                                    String resImg = (String) categoryList.get("restaurantImg");
+                                    String resTitle = (String) categoryList.get("restaurantTitle");
+                                    String pImg = (String) categoryList.get("placeImg");
+                                    String pTitle = (String) categoryList.get("placeTitle");
+
+                                    // Check the values of resImg and other fields
+                                    Log.d("MyApp", "hImg: " + hImg);
+                                    Log.d("MyApp", "hTitle: " + hTitle);
+                                    Log.d("MyApp", "pImg: " + pImg);
+                                    Log.d("MyApp", "pTitle: " + pTitle);
+                                    Log.d("MyApp", "resImg: " + resImg);
+                                    Log.d("MyApp", "resTitle: " + resTitle);
 
                                     categoryTitle.setText(category_title);
                                     hotelTitle.setText(hTitle);
@@ -84,11 +116,9 @@ public class HomeFragment extends Fragment {
                                     restaurantTitle.setText(resTitle);
 
                                     // Load images using Glide
-                                    Glide.with(this).load(document.getString("main_img_url")).into(mainImage);
                                     Glide.with(this).load(pImg).into(placeImage);
                                     Glide.with(this).load(resImg).into(restaurantImage);
                                     Glide.with(this).load(hImg).into(hotelImage);
-
                                 } else {
                                     Toast.makeText(getContext(), "Document not found.", Toast.LENGTH_SHORT).show();
                                 }

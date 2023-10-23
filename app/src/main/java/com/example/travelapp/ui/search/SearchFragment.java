@@ -12,6 +12,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.SearchView;
+
+import com.example.travelapp.MainActivity;
 import com.example.travelapp.R;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -20,41 +23,59 @@ import java.util.List;
 
 
 public class SearchFragment extends Fragment {
-    private static final String TAG = "Travel Search";
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private FrameLayout searchScreen;
+    private static final String TAG = "TravelSearch";
+    private FirebaseFirestore db;
     private RecyclerView searchResults;
     private TravelItemAdapter adapter;
 
-
-    @SuppressLint("MissingInflatedId")
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_search, container, false);
-        searchScreen = rootView.findViewById(R.id.search_screen);
 
+        db = FirebaseFirestore.getInstance();
         searchResults = rootView.findViewById(R.id.searchResults);
-        adapter = new TravelItemAdapter(new ArrayList<>());
+        adapter = new TravelItemAdapter(new ArrayList<>()); // Initialize with an empty list
+
         searchResults.setLayoutManager(new LinearLayoutManager(getContext()));
         searchResults.setAdapter(adapter);
 
-        // Query Firestore and update the adapter with data
-        // Example Firestore query:
-//         db.collection("your_collection_name")
-//           .get()
-//           .addOnCompleteListener(task -> {
-//               if (task.isSuccessful()) {
-//                   List<TravelItem> items = new ArrayList<>();
-//                   for (QueryDocumentSnapshot document : task.getResult()) {
-//                       TravelItem item = document.toObject(TravelItem.class);
-//                       items.add(item);
-//                   }
-//                   adapter.setData(items);
-//               } else {
-//                   Log.d(TAG, "Error getting documents: ", task.getException());
-//               }
-//           });
+        SearchView searchView = rootView.findViewById(R.id.searchView);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener(){
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                PerformSearch(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                PerformSearch(newText);
+                return true;
+            }
+        });
+
 
         return rootView;
+    }
+
+    private void PerformSearch(String query){
+        // Query Firestore and update the adapter with data
+        db.collection("search_screen")
+                .whereEqualTo("place_title", query)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        ArrayList<TravelItem> items = new ArrayList<>();
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            TravelItem item = document.toObject(TravelItem.class);
+                            items.add(item);
+                        }
+                        adapter.setData(items); // Assuming you have a setData method in TravelItemAdapter
+                    } else {
+                        Log.e(TAG, "Error getting documents", task.getException());
+                    }
+                });
+
     }
 }

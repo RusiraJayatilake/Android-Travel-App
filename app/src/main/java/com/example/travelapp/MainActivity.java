@@ -20,7 +20,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
     private ViewPager2 viewPager2;
     private ViewPager2Adapter viewPager2Adapter;
-    private ArrayList<Fragment> fragmentArrayList = new ArrayList<>();
+    private ArrayList<Fragment> fragmentArrayList;
     private BottomNavigationView bottomNavigationView;
 
     @Override
@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
 
         // Add fragments to the arraylist
+        fragmentArrayList = new ArrayList<>();
         fragmentArrayList.add(new HomeFragment());
         fragmentArrayList.add(new SearchFragment());
         fragmentArrayList.add(new MapFragment());
@@ -74,7 +75,6 @@ public class MainActivity extends AppCompatActivity {
                     viewPager2.setCurrentItem(3);
                 }
                 return true;
-
             }
         });
     }
