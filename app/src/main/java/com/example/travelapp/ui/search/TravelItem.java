@@ -3,7 +3,7 @@ package com.example.travelapp.ui.search;
 import java.io.Serializable;
 
 public class TravelItem implements Serializable {
-    private String placeTitle, placeImage;
+    private String placeTitle, placeImage, documentId;
 
     // Constructor
     public TravelItem(String placeImage, String placeTitle){
@@ -23,6 +23,12 @@ public class TravelItem implements Serializable {
     }
     public String getPlaceImage() {
         return placeImage;
+    }
+    public String getDocumentId() {
+        return documentId;
+    }
+    public void setDocumentId(String documentId) {
+        this.documentId = documentId;
     }
 
 }

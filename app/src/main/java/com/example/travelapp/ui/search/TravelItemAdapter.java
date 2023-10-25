@@ -68,6 +68,10 @@ public class TravelItemAdapter extends RecyclerView.Adapter<TravelItemAdapter.Vi
         this.travelItems = items;
         notifyDataSetChanged(); // Notify the adapter that the data has changed
     }
+
+    public String getItemDocumentId(int position){
+        return travelItems.get(position).getDocumentId();
+    }
 }
 
 

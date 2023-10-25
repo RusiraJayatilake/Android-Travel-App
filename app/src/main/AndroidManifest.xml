@@ -15,6 +15,9 @@
         android:theme="@style/Theme.TravelApp"
         tools:targetApi="31">
         <activity
+            android:name=".ui.search.DetailsActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>

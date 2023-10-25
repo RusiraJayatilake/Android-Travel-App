@@ -1,6 +1,7 @@
 package com.example.travelapp.ui.search;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -9,10 +10,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import com.example.travelapp.MainActivity;
 import com.example.travelapp.R;
@@ -25,6 +28,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 
 public class SearchFragment extends Fragment {
@@ -34,6 +39,7 @@ public class SearchFragment extends Fragment {
     private RecyclerView searchResults;
     private TravelItemAdapter adapter;
     private SearchView searchView;
+    private TravelItem travelItem;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -63,6 +69,36 @@ public class SearchFragment extends Fragment {
             }
         });
 
+        searchResults.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+            @Override
+            public boolean onInterceptTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
+                View child = rv.findChildViewUnder(e.getX(), e.getY());
+                if (child != null) {
+                    int position = rv.getChildAdapterPosition(child);
+
+                    // Get the Firestore document ID of the clicked item
+                    String documentId = adapter.getItemDocumentId(position);
+
+                    // Create an Intent to start the DetailsActivity
+                    Intent intent = new Intent(getContext(), DetailsActivity.class);
+                    intent.putExtra("placeId", documentId); // Pass the Firestore document ID
+                    startActivity(intent);
+                }
+                return false;
+            }
+
+            @Override
+            public void onTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
+                // Handle touch events if needed
+            }
+
+            @Override
+            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+                // Handle disallowing touch events if needed
+            }
+        });
+
+
         fetchDataFromFirestore();
 
         return rootView;
@@ -78,9 +114,11 @@ public class SearchFragment extends Fragment {
                         if (task.isSuccessful()) {
                         ArrayList<TravelItem> items = new ArrayList<>();
                         for (QueryDocumentSnapshot document : task.getResult()) {
-                            String imageUrl = document.getString("placeImage");
-                            String title = document.getString("placeTitle");
+                            String imageUrl = document.getString("image");
+                            String title = document.getString("title");
+                            String documentId = document.getId();
                             items.add(new TravelItem(imageUrl, title));
+                            travelItem.setDocumentId(documentId);
                         }
                         adapter.setData(items);
                         adapter.notifyDataSetChanged();
@@ -93,22 +131,36 @@ public class SearchFragment extends Fragment {
     }
 
     private void fetchDataFromFirestore() {
-        collectionRef.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                ArrayList<TravelItem> items = new ArrayList<>();
-                for (QueryDocumentSnapshot document : task.getResult()) {
-                    String imageUrl = document.getString("placeImg");
-                    String title = document.getString("placeTitle");
-                    items.add(new TravelItem(imageUrl, title));
-                }
-                // Update the adapter with the retrieved data
-                adapter.setData(items);
-                adapter.notifyDataSetChanged();
-            } else {
-                // Handle the error
-                Log.e(TAG, "Error getting documents: " + task.getException());
+        Executor executor = Executors.newFixedThreadPool(4);
+        executor.execute(() -> {
+            try{
+                collectionRef.get().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        ArrayList<TravelItem> items = new ArrayList<>();
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            String imageUrl = document.getString("image");
+                            String title = document.getString("title");
+                            items.add(new TravelItem(imageUrl, title));
+                        }
+                        // Update the adapter with the retrieved data
+                        adapter.setData(items);
+                        adapter.notifyDataSetChanged();
+                    } else {
+                        // Handle the error
+                        requireActivity().runOnUiThread(() -> {
+                            Toast.makeText(getContext(), "Error getting documents:", Toast.LENGTH_SHORT).show();
+                            //Log.e(TAG, " " + task.getException());
+                        });
+
+                    }
+                });
+
+            } catch (Exception e){
+                e.printStackTrace();
+
             }
         });
+
     }
 
 }
