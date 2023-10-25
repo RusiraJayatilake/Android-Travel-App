@@ -16,8 +16,13 @@ import android.widget.SearchView;
 
 import com.example.travelapp.MainActivity;
 import com.example.travelapp.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,57 +30,85 @@ import java.util.List;
 public class SearchFragment extends Fragment {
     private static final String TAG = "TravelSearch";
     private FirebaseFirestore db;
+    private CollectionReference collectionRef;
     private RecyclerView searchResults;
     private TravelItemAdapter adapter;
+    private SearchView searchView;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_search, container, false);
 
         db = FirebaseFirestore.getInstance();
-        searchResults = rootView.findViewById(R.id.searchResults);
-        adapter = new TravelItemAdapter(new ArrayList<>()); // Initialize with an empty list
+        collectionRef = db.collection("SearchScreenData");
 
+        searchResults = rootView.findViewById(R.id.searchResults);
+        adapter = new TravelItemAdapter(getContext(), new ArrayList<>()); // Initialize with an empty list
         searchResults.setLayoutManager(new LinearLayoutManager(getContext()));
         searchResults.setAdapter(adapter);
 
-        SearchView searchView = rootView.findViewById(R.id.searchView);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener(){
-
+        searchView = rootView.findViewById(R.id.searchView);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public boolean onQueryTextSubmit(String query) {
-                PerformSearch(query);
-                return true;
+            public boolean onQueryTextSubmit(String s) {
+                searchDataFromFirestore(s);
+                return false;
             }
 
             @Override
-            public boolean onQueryTextChange(String newText) {
-                PerformSearch(newText);
-                return true;
+            public boolean onQueryTextChange(String s) {
+                // Handle real-time search
+                searchDataFromFirestore(s);
+                return false;
             }
         });
 
+        fetchDataFromFirestore();
 
         return rootView;
     }
 
-    private void PerformSearch(String query){
-        // Query Firestore and update the adapter with data
-        db.collection("search_screen")
-                .whereEqualTo("place_title", query)
+    // ** when fetching data from the firestore that data should be set into an arraylist
+    private void searchDataFromFirestore(String query) {
+        collectionRef.whereEqualTo("search", query.toLowerCase())
                 .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
                         ArrayList<TravelItem> items = new ArrayList<>();
                         for (QueryDocumentSnapshot document : task.getResult()) {
-                            TravelItem item = document.toObject(TravelItem.class);
-                            items.add(item);
+                            String imageUrl = document.getString("placeImage");
+                            String title = document.getString("placeTitle");
+                            items.add(new TravelItem(imageUrl, title));
                         }
-                        adapter.setData(items); // Assuming you have a setData method in TravelItemAdapter
-                    } else {
-                        Log.e(TAG, "Error getting documents", task.getException());
+                        adapter.setData(items);
+                        adapter.notifyDataSetChanged();
+                        } else {
+                            Log.e(TAG, "Error getting documents: " + task.getException());
+                        }
                     }
                 });
 
     }
+
+    private void fetchDataFromFirestore() {
+        collectionRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                ArrayList<TravelItem> items = new ArrayList<>();
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    String imageUrl = document.getString("placeImg");
+                    String title = document.getString("placeTitle");
+                    items.add(new TravelItem(imageUrl, title));
+                }
+                // Update the adapter with the retrieved data
+                adapter.setData(items);
+                adapter.notifyDataSetChanged();
+            } else {
+                // Handle the error
+                Log.e(TAG, "Error getting documents: " + task.getException());
+            }
+        });
+    }
+
 }

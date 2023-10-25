@@ -2,6 +2,7 @@ package com.example.travelapp.ui.search;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,13 +16,14 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.travelapp.R;
 import java.util.ArrayList;
+import java.util.List;
 
 public class TravelItemAdapter extends RecyclerView.Adapter<TravelItemAdapter.ViewHolder> {
-
     private Context context;
-    private ArrayList<TravelItem> travelItems;
+    private List<TravelItem> travelItems;
 
-    public TravelItemAdapter(ArrayList<TravelItem> items){
+    public TravelItemAdapter(Context context, List<TravelItem> items){
+        this.context = context;
         this.travelItems = items;
     }
 
@@ -29,7 +31,6 @@ public class TravelItemAdapter extends RecyclerView.Adapter<TravelItemAdapter.Vi
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.travel_item, parent, false);
-
         return new ViewHolder(view);
     }
 
@@ -44,10 +45,7 @@ public class TravelItemAdapter extends RecyclerView.Adapter<TravelItemAdapter.Vi
         String imgUrl = item.getPlaceImage();
         ImageView imageView = holder.placeImage;
 
-        Glide.with(context).load(imgUrl).apply(
-                new RequestOptions().placeholder(R.id.searchImage)
-        ).into(imageView);
-
+        Glide.with(context).load(imgUrl).into(imageView);
     }
 
     @Override
@@ -62,7 +60,7 @@ public class TravelItemAdapter extends RecyclerView.Adapter<TravelItemAdapter.Vi
         public ViewHolder(View itemView) {
             super(itemView);
             placeImage = itemView.findViewById(R.id.searchImage);
-            placeImage = itemView.findViewById(R.id.searchTitle);
+            placeTitle = itemView.findViewById(R.id.searchTitle);
         }
     }
 
@@ -71,4 +69,6 @@ public class TravelItemAdapter extends RecyclerView.Adapter<TravelItemAdapter.Vi
         notifyDataSetChanged(); // Notify the adapter that the data has changed
     }
 }
+
+
 

@@ -1,6 +1,8 @@
 package com.example.travelapp.ui.search;
 
-public class TravelItem {
+import java.io.Serializable;
+
+public class TravelItem implements Serializable {
     private String placeTitle, placeImage;
 
     // Constructor

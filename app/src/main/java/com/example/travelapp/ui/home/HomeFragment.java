@@ -4,7 +4,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -97,17 +96,14 @@ public class HomeFragment extends Fragment {
                                     String category_title = document.getString("categoryTitle");
                                     String hImg = (String) categoryList.get("hotelImg");
                                     String hTitle = (String) categoryList.get("hotelTitle");
-                                    String resImg = (String) categoryList.get("restaurantImg");
+                                    String  resImg = (String) categoryList.get("restaurantImg");
                                     String resTitle = (String) categoryList.get("restaurantTitle");
                                     String pImg = (String) categoryList.get("placeImg");
                                     String pTitle = (String) categoryList.get("placeTitle");
 
                                     // Check the values of resImg and other fields
-                                    Log.d("MyApp", "hImg: " + hImg);
                                     Log.d("MyApp", "hTitle: " + hTitle);
-                                    Log.d("MyApp", "pImg: " + pImg);
                                     Log.d("MyApp", "pTitle: " + pTitle);
-                                    Log.d("MyApp", "resImg: " + resImg);
                                     Log.d("MyApp", "resTitle: " + resTitle);
 
                                     categoryTitle.setText(category_title);
