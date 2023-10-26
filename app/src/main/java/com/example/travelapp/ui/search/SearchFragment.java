@@ -105,12 +105,7 @@ public class SearchFragment extends Fragment {
                             items.add(new TravelItem(imageUrl, title, documentId));
                             if(travelItem != null){
                                 travelItem.setDocumentId(documentId);
-                            } else{
-                                Toast.makeText(getContext(), "Document id is null", Toast.LENGTH_SHORT).show();
                             }
-                            //travelItem.setDocumentId(documentId);
-
-                            Log.d("Document ID", documentId);
                         }
                         adapter.setData(items);
                         adapter.notifyDataSetChanged();

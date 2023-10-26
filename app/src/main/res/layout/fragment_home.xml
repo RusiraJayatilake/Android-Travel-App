@@ -9,7 +9,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="621dp"
+        android:layout_height="617dp"
         android:layout_centerHorizontal="true"
         android:orientation="vertical"
         tools:layout_editor_absoluteX="155dp"
@@ -18,7 +18,7 @@
         <ImageView
             android:id="@+id/mainImage"
             android:layout_width="match_parent"
-            android:layout_height="281dp"
+            android:layout_height="274dp"
             android:autoSizeMaxTextSize="100sp"
             android:autoSizeMinTextSize="12sp"
             android:autoSizeStepGranularity="2sp"
@@ -31,9 +31,9 @@
             android:id="@+id/mainTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="6dp"
             android:textAlignment="center"
-            android:textSize="28sp"
+            android:textSize="25sp"
             android:textStyle="bold"
             app:fontFamily="@font/playpensanssemibold" />
 
@@ -43,7 +43,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:textAlignment="center"
-            android:textSize="15sp"
+            android:textSize="12sp"
             app:fontFamily="@font/playpensanssemibold" />
 
         <TextView
@@ -82,10 +82,10 @@
 
                     <TextView
                         android:id="@+id/place_title"
-                        android:layout_width="120dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textAlignment="center"
-                        android:textColor="@color/white"/>
+                        android:textColor="@color/white" />
                 </LinearLayout>
 
                 <!-- Second Item -->
@@ -103,7 +103,7 @@
 
                     <TextView
                         android:id="@+id/restaurant_title"
-                        android:layout_width="120dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textAlignment="center" />
                 </LinearLayout>
@@ -123,7 +123,7 @@
 
                     <TextView
                         android:id="@+id/hotel_title"
-                        android:layout_width="120dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textAlignment="center" />
                 </LinearLayout>

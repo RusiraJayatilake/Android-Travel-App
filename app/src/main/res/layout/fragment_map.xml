@@ -10,7 +10,7 @@
         android:id="@+id/mapText"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Google Maps" />
+        android:text="Google Maps, Yet to be implemented" />
 
 <!--    <fragment-->
 <!--        android:id="@+id/map_layout"-->
