@@ -1,15 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/profile_screen"
     tools:context=".ui.profile.ProfileFragment">
 
-    <TextView
-        android:id="@+id/profileText"
+<!--    <TextView-->
+<!--        android:id="@+id/profileText"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:text="Profile Fragment" />-->
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Profile Fragment" />
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:gravity="center">
+<!--        android:background="@color/background_color"-->
+
+        <!-- Profile Image -->
+        <ImageView
+            android:id="@+id/profileImage"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_gravity="center_horizontal"
+            android:scaleType="centerCrop"
+            android:src="@drawable/profile_img" />
+
+        <!-- Name -->
+        <TextView
+            android:id="@+id/profileName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="John Doe"
+            android:textSize="22sp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp"
+            app:fontFamily="@font/playpensanssemibold"/>
+
+        <!-- Email -->
+        <TextView
+            android:id="@+id/profileEmail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="johndoe@example.com"
+            android:textSize="16sp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            app:fontFamily="@font/playpensanssemibold"/>
+
+        <!-- Edit Profile Button -->
+        <Button
+            android:id="@+id/editProfileButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Edit Profile"
+            android:textSize="15sp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="18dp"
+            app:fontFamily="@font/playpensanssemibold"/>
+    </LinearLayout>
 
 </FrameLayout>

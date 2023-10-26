@@ -69,7 +69,7 @@ public class SearchFragment extends Fragment {
             }
         });
 
-
+        // Event listeners
         searchResults.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
@@ -89,7 +89,7 @@ public class SearchFragment extends Fragment {
         return rootView;
     }
 
-    // ** when fetching data from the firestore that data should be set into an arraylist
+    // Search data
     private void searchDataFromFirestore(String query) {
         collectionRef.whereEqualTo("search", query.toLowerCase())
                 .get()
@@ -115,6 +115,7 @@ public class SearchFragment extends Fragment {
 
     }
 
+    // Fetch data from firestore
     private void fetchDataFromFirestore() {
         Executor executor = Executors.newFixedThreadPool(4);
         executor.execute(() -> {

@@ -22,13 +22,12 @@ public class MapFragment extends Fragment {
         // Required empty public constructor
     }
 
-
     @SuppressLint("MissingInflatedId")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_map, container, false);
         mapScreen = rootView.findViewById(R.id.map_screen);
-        mapText = rootView.findViewById(R.id.mapText);
+        //mapText = rootView.findViewById(R.id.mapText);
 
         return rootView;
 
