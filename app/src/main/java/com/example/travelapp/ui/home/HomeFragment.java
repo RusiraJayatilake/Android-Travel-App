@@ -101,11 +101,6 @@ public class HomeFragment extends Fragment {
                                     String pImg = (String) categoryList.get("placeImg");
                                     String pTitle = (String) categoryList.get("placeTitle");
 
-                                    // Check the values of resImg and other fields
-                                    Log.d("MyApp", "hTitle: " + hTitle);
-                                    Log.d("MyApp", "pTitle: " + pTitle);
-                                    Log.d("MyApp", "resTitle: " + resTitle);
-
                                     categoryTitle.setText(category_title);
                                     hotelTitle.setText(hTitle);
                                     placeTitle.setText(pTitle);

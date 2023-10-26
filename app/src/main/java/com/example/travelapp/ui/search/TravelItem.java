@@ -6,9 +6,10 @@ public class TravelItem implements Serializable {
     private String placeTitle, placeImage, documentId;
 
     // Constructor
-    public TravelItem(String placeImage, String placeTitle){
+    public TravelItem(String placeImage, String placeTitle, String documentId){
         this.setPlaceImage(placeImage);
         this.setPlaceTitle(placeTitle);
+        this.setDocumentId(documentId);
     }
 
     // Getters and Setters

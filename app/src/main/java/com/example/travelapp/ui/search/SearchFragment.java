@@ -102,8 +102,15 @@ public class SearchFragment extends Fragment {
                             String imageUrl = document.getString("image");
                             String title = document.getString("title");
                             String documentId = document.getId();
-                            items.add(new TravelItem(imageUrl, title));
-                            travelItem.setDocumentId(documentId);
+                            items.add(new TravelItem(imageUrl, title, documentId));
+                            if(travelItem != null){
+                                travelItem.setDocumentId(documentId);
+                            } else{
+                                Toast.makeText(getContext(), "Document id is null", Toast.LENGTH_SHORT).show();
+                            }
+                            //travelItem.setDocumentId(documentId);
+
+                            Log.d("Document ID", documentId);
                         }
                         adapter.setData(items);
                         adapter.notifyDataSetChanged();
@@ -126,7 +133,8 @@ public class SearchFragment extends Fragment {
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             String imageUrl = document.getString("image");
                             String title = document.getString("title");
-                            items.add(new TravelItem(imageUrl, title));
+                            String docId = document.getId();
+                            items.add(new TravelItem(imageUrl, title, docId));
                         }
                         // Update the adapter with the retrieved data
                         adapter.setData(items);
