@@ -24,11 +24,11 @@ public class TravelItem implements Serializable {
     public String getPlaceImage() {
         return placeImage;
     }
-    public String getDocumentId() {
-        return documentId;
-    }
     public void setDocumentId(String documentId) {
         this.documentId = documentId;
+    }
+    public String getDocumentId() {
+        return documentId;
     }
 
 }

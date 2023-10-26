@@ -34,33 +34,33 @@ public class DetailsActivity extends AppCompatActivity {
 
     }
 
-//    @Override
-//    protected void onStart() {
-//        super.onStart();
-//        Intent intent = getIntent();
-//        if (intent != null) {
-//            String placeId = intent.getStringExtra("placeId"); // Assuming you pass the Firestore document ID
-//
-//            if (placeId != null) {
-//                // Reference to the Firestore document
-//                DocumentReference placeRef = db.collection("places").document(placeId);
-//
-//                // Retrieve data from Firestore
-//                placeRef.get().addOnSuccessListener(documentSnapshot -> {
-//                    if (documentSnapshot.exists()) {
-//                        String placeImageUrl = documentSnapshot.getString("image");
-//                        String placeTitle = documentSnapshot.getString("title");
-//                        String placeDescription = documentSnapshot.getString("description");
-//
-//                        // Update the views with the retrieved data
-//                        Glide.with(this).load(placeImageUrl).into(activityImg);
-//                        activityTitle.setText(placeTitle);
-//                        activityDes.setText(placeDescription);
-//                    }
-//                }).addOnFailureListener(e -> {
-//                    // Handle the case where data retrieval from Firestore fails
-//                });
-//            }
-//        }
-//    }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Intent intent = getIntent();
+        if (intent != null) {
+            String placeId = intent.getStringExtra("place1");
+
+            if (placeId != null) {
+                // Reference to the Firestore document
+                DocumentReference placeRef = db.collection("SearchScreenData").document(placeId);
+
+                // Retrieve data from Firestore
+                placeRef.get().addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        String placeImageUrl = documentSnapshot.getString("image");
+                        String placeTitle = documentSnapshot.getString("title");
+                        String placeDescription = documentSnapshot.getString("description");
+
+                        // Update the views with the retrieved data
+                        Glide.with(this).load(placeImageUrl).into(activityImg);
+                        activityTitle.setText(placeTitle);
+                        activityDes.setText(placeDescription);
+                    }
+                }).addOnFailureListener(e -> {
+                    // Handle the case where data retrieval from Firestore fails
+                });
+            }
+        }
+    }
 }

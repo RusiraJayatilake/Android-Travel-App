@@ -69,34 +69,19 @@ public class SearchFragment extends Fragment {
             }
         });
 
-        searchResults.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+
+        searchResults.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), new RecyclerItemClickListener.OnItemClickListener() {
             @Override
-            public boolean onInterceptTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
-                View child = rv.findChildViewUnder(e.getX(), e.getY());
-                if (child != null) {
-                    int position = rv.getChildAdapterPosition(child);
+            public void onItemClick(View view, int position) {
+                // Get the Firestore document ID of the clicked item
+                String documentId = adapter.getItemDocumentId(position);
 
-                    // Get the Firestore document ID of the clicked item
-                    String documentId = adapter.getItemDocumentId(position);
-
-                    // Create an Intent to start the DetailsActivity
-                    Intent intent = new Intent(getContext(), DetailsActivity.class);
-                    intent.putExtra("placeId", documentId); // Pass the Firestore document ID
-                    startActivity(intent);
-                }
-                return false;
+                // Create an Intent to start the DetailsActivity
+                Intent intent = new Intent(getContext(), DetailsActivity.class);
+                intent.putExtra("place1", documentId); // Pass the Firestore document ID as "place1"
+                startActivity(intent);
             }
-
-            @Override
-            public void onTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
-                // Handle touch events if needed
-            }
-
-            @Override
-            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-                // Handle disallowing touch events if needed
-            }
-        });
+        }));
 
 
         fetchDataFromFirestore();
